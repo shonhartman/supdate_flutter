@@ -1,3 +1,6 @@
+# Supabase / secrets (never commit real credentials)
+config.json
+
 # Miscellaneous
 *.class
 *.log

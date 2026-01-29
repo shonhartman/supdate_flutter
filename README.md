@@ -57,14 +57,29 @@ We’re running both **to find the native limits**: where Flutter is enough, whe
 
 ### Setup and run
 
+1. Clone and install dependencies:
+
 ```bash
 git clone https://github.com/shonhartman/supdate_flutter.git
 cd supdate_flutter
 flutter pub get
-flutter run
 ```
 
-Use `flutter run -d chrome` for web, or `flutter run -d "iPhone 16"` (or your device) for iOS.
+2. Configure Supabase (required; credentials are not in the repo):
+
+- Copy `config.json.example` to `config.json`.
+- Get your project URL and anon key from [Supabase](https://supabase.com/dashboard) → your project → **Settings** → **API**.
+- Put them in `config.json`:
+  - `SUPABASE_URL`: your project URL (e.g. `https://xxxxx.supabase.co`)
+  - `SUPABASE_ANON_KEY`: your anon (public) key
+
+3. Run the app with the config file:
+
+```bash
+flutter run --dart-define-from-file=config.json
+```
+
+Use `flutter run -d chrome` for web, or `flutter run -d "iPhone 16"` (or your device) for iOS. Add `--dart-define-from-file=config.json` to your IDE run configuration so you don’t have to pass it every time.
 
 ### Doctor check
 
