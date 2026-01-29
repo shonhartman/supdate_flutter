@@ -59,15 +59,9 @@ class _AuthScreenState extends State<AuthScreen> {
         );
       }
     } on AuthException catch (e) {
-      setState(() {
-        _errorMessage = e.message;
-        _isLoading = false;
-      });
+      setState(() => _errorMessage = e.message);
     } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
+      setState(() => _errorMessage = e.toString());
     }
 
     if (mounted) {
