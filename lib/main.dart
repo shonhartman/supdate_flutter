@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+import 'supabase_config.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   runApp(const MyApp());
 }
 
@@ -55,6 +60,40 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  String? _supabaseStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSupabaseConnection();
+  }
+
+  Future<void> _checkSupabaseConnection() async {
+    try {
+      await Supabase.instance.client.auth.getUser();
+      if (mounted) {
+        setState(() => _supabaseStatus = 'Connected');
+        _showConnectionSnackBar('Supabase: Connected', isError: false);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _supabaseStatus = 'Error: $e');
+        _showConnectionSnackBar('Supabase: Error: $e', isError: true);
+      }
+    }
+  }
+
+  void _showConnectionSnackBar(String message, {required bool isError}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: isError ? Theme.of(context).colorScheme.error : null,
+        ),
+      );
+    });
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -86,24 +125,31 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            if (_supabaseStatus != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: Text(
+                  'Supabase: $_supabaseStatus',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: _supabaseStatus!.startsWith('Error')
+                        ? Theme.of(context).colorScheme.error
+                        : Colors.green,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              )
+            else
+              const Padding(
+                padding: EdgeInsets.only(bottom: 24),
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
             const Text('You have pushed the button this many times:'),
             Text(
               '$_counter',
