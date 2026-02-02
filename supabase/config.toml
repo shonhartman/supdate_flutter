@@ -1,0 +1,8 @@
+# Supabase project config (used by CLI for deploy and local).
+# See: https://supabase.com/docs/guides/functions/config
+
+[functions.recommend-photo]
+# Let the function validate the JWT in code (auth.ts) instead of the gateway.
+# The gateway may reject tokens (e.g. after JWT signing key changes); we still
+# require a valid Bearer token and return 401 if missing or invalid.
+verify_jwt = false

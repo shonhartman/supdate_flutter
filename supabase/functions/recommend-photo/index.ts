@@ -11,7 +11,8 @@ import { checkRateLimit } from "../_shared/rateLimit.ts";
 const MIN_IMAGES = 2;
 const MAX_IMAGES = 10;
 const MAX_BASE64_BYTES_PER_IMAGE = 5 * 1024 * 1024; // 5MB sanity check
-const GEMINI_MODEL = "gemini-1.5-flash";
+// gemini-1.5-flash is deprecated; use stable gemini-2.5-flash (supports images + generateContent).
+const GEMINI_MODEL = "gemini-2.5-flash";
 const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta";
 
 const SYSTEM_INSTRUCTION =

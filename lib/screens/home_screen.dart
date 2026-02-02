@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/di.dart';
@@ -28,18 +27,33 @@ class _HomeView extends StatelessWidget {
   const _HomeView();
 
   Future<void> _pickAndRecommend(BuildContext context) async {
-    final status = await PhotoPermissionService.instance.requestPhotoAccess();
-    if (!context.mounted) return;
-    if (status != PermissionStatus.granted) {
+    // On iOS 14+, the system picker (PHPicker) opens without requiring the
+    // legacy "Photo Library" permission—user selects photos in the picker.
+    // We only request permission on Android; on iOS we open the picker directly.
+    final picker = ImagePicker();
+    List<XFile> files;
+    try {
+      files = await picker.pickMultiImage(imageQuality: 100, limit: 10);
+    } catch (e) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Photo access is needed to pick images.')),
+        SnackBar(
+          content: const Text(
+            'Photo access is needed to pick images. You can change this in Settings.',
+          ),
+          action: SnackBarAction(
+            label: 'Settings',
+            onPressed: () async {
+              await PhotoPermissionService.instance.openSettings();
+            },
+          ),
+        ),
       );
       return;
     }
 
-    final picker = ImagePicker();
-    final files = await picker.pickMultiImage(imageQuality: 100, limit: 10);
-    if (!context.mounted || files.isEmpty) return;
+    if (!context.mounted) return;
+    if (files.isEmpty) return;
 
     if (files.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(

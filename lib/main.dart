@@ -8,10 +8,60 @@ import 'supabase_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  requireSupabaseConfig();
+  try {
+    requireSupabaseConfig();
+  } catch (e) {
+    runApp(_ConfigErrorApp(message: e.toString()));
+    return;
+  }
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   setupServiceLocator();
   runApp(const MyApp());
+}
+
+/// Shown when SUPABASE_URL / SUPABASE_ANON_KEY are not set (e.g. run without --dart-define-from-file=config.json).
+class _ConfigErrorApp extends StatelessWidget {
+  const _ConfigErrorApp({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                const SizedBox(height: 16),
+                Text(
+                  'Missing Supabase config',
+                  style: ThemeData().textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  message,
+                  style: ThemeData().textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Run with: flutter run --dart-define-from-file=config.json',
+                  style: TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

@@ -24,6 +24,18 @@ class CuratorRepositoryImpl implements CuratorRepository {
       throw CuratorException('Select between 2 and 10 photos.');
     }
 
+    // Use a fresh session so the JWT isn't expired (gateway verifies it).
+    Session? session = _client.auth.currentSession;
+    try {
+      final refreshed = await _client.auth.refreshSession();
+      session = refreshed.session;
+    } catch (_) {
+      // Keep current session if refresh fails (e.g. offline).
+    }
+    if (session == null) {
+      throw CuratorException('Not signed in. Please sign in and try again.');
+    }
+
     final images = <Map<String, String>>[];
     for (final bytes in imageBytesList) {
       final resized = resizeImageForCurator(
@@ -35,9 +47,11 @@ class CuratorRepositoryImpl implements CuratorRepository {
       images.add({'base64': base64Encode(resized), 'mimeType': 'image/jpeg'});
     }
 
+    final token = session.accessToken;
     final response = await _client.functions.invoke(
       'recommend-photo',
       body: {'images': images},
+      headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.status != 200) {
