@@ -2,7 +2,7 @@
 
 ## recommend-photo
 
-Accepts 2–10 base64 images in the request body, calls Gemini 1.5 Flash (Vision), and returns the recommended photo index plus caption and vibe.
+Accepts 2–10 base64 images in the request body, calls Gemini 2.5 Flash (Vision), and returns the recommended photo index plus caption and vibe.
 
 ### Request
 
