@@ -18,7 +18,7 @@ Accepts 2–10 base64 images in the request body, calls Gemini 2.5 Flash (Vision
 
 ### Secrets
 
-Set the Gemini API key in Supabase (Dashboard → Project Settings → Edge Functions → Secrets, or CLI):
+Set the Gemini API key in Supabase (Dashboard → Edge Functions → Secrets, or Use the Supabase CLI):
 
 ```bash
 supabase secrets set GEMINI_API_KEY=your_gemini_api_key
