@@ -55,6 +55,17 @@ class _HomeView extends StatelessWidget {
     if (!context.mounted) return;
     if (files.isEmpty) return;
 
+    if (files.length > 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Select at most 10 photos (you selected ${files.length}).',
+          ),
+        ),
+      );
+      return;
+    }
+
     if (files.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Select at least 2 photos (2–10).')),
