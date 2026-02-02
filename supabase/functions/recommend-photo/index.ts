@@ -1,6 +1,7 @@
+/// <reference path="../deno.d.ts" />
 /**
  * recommend-photo: Supabase Edge Function
- * Accepts 2–10 base64 images, calls Gemini 1.5 Flash (Vision), returns
+ * Accepts 2–10 base64 images, calls Gemini 2.5 Flash (Vision), returns
  * { recommendedIndex, caption, vibe }. Requires Authorization header for rate limiting.
  */
 
@@ -164,7 +165,7 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  const authResult = await getUserIdFromRequest(req);
+  const authResult = await getUserIdFromRequest(req, origin);
   if ("error" in authResult) {
     return authResult.error;
   }
