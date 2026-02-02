@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'core/di.dart';
 import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
 import 'supabase_config.dart';
@@ -9,6 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   requireSupabaseConfig();
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+  setupServiceLocator();
   runApp(const MyApp());
 }
 
