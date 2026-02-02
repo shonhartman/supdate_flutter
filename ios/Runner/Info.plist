@@ -47,5 +47,7 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Supdate uses your photos to suggest and create social posts.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Supdate saves generated images to your photo library when you export or save posts.</string>
 </dict>
 </plist>
