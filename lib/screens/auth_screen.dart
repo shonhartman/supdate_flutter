@@ -43,15 +43,6 @@ class _AuthScreenState extends State<AuthScreen> {
           email: email,
           password: password,
         );
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Check your email to confirm your account, then sign in.',
-              ),
-            ),
-          );
-        }
       } else {
         await Supabase.instance.client.auth.signInWithPassword(
           email: email,

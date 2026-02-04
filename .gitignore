@@ -1,5 +1,7 @@
 # Supabase / secrets (never commit real credentials)
 config.json
+# Supabase CLI generated artifacts (can leak project info)
+supabase/.temp/
 
 # Miscellaneous
 *.class
